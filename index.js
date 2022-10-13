@@ -19,6 +19,13 @@ async function run() {
         await client.connect();
         const userCollection = client.db("redpositive_user").collection("user");
 
+        // Load all user
+        app.get('/users', async (req, res) => {
+            const query = {};
+            const cursor = userCollection.find(query);
+            const result = await cursor.toArray()
+            res.send(result);
+        });
 
         // save a user details
         app.post('/users', async (req, res) => {
