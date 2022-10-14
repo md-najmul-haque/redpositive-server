@@ -28,9 +28,8 @@ async function run() {
         });
 
         // save a user details
-        app.post('/users', async (req, res) => {
+        app.post('/user', async (req, res) => {
             const user = req.body;
-            console.log(user)
             const result = userCollection.insertOne(user);
             res.status(200).json({
                 success: true,
@@ -39,23 +38,38 @@ async function run() {
             });
         });
 
+        //to get specific user each id
+        app.get('/user/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await userCollection.findOne(query);
+            res.send(result);
+        })
+
         //API for update information
-        app.patch('/users/:id', async (req, res) => {
+        app.patch('/user/:id', async (req, res) => {
             const id = req.params.id;
             const user = req.body;
             const filter = { _id: ObjectId(id) };
             const updatedDoc = {
                 $set: {
-                    user: user
+                    name: user.name,
+                    phone: user.phone,
+                    email: user.email,
+                    hobby: user.hobby
                 }
             }
             const updateUser = await userCollection.updateOne(filter, updatedDoc);
-            res.send(updateUser);
+            res.status(200).json({
+                success: true,
+                message: 'User data updated successfully',
+                updateUser,
+            });
         })
 
 
         // API for delete 
-        app.delete('/users/:id', async (req, res) => {
+        app.delete('/user/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await userCollection.deleteOne(query);
