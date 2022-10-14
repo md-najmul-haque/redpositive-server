@@ -39,6 +39,21 @@ async function run() {
             });
         });
 
+        //API for update information
+        app.patch('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const user = req.body;
+            const filter = { _id: ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    user: user
+                }
+            }
+            const updateUser = await userCollection.updateOne(filter, updatedDoc);
+            res.send(updateUser);
+        })
+
+
         // API for delete 
         app.delete('/users/:id', async (req, res) => {
             const id = req.params.id;
